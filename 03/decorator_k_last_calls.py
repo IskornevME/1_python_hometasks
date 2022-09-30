@@ -25,7 +25,8 @@ def timer(k):
             for i in range(len(arr)):
                 print(f"{arr[i]:.5f}", end=', ')
             print('\n')
-            return round(mean_time, 5)
+            dct[count] = mean_time
+            return res
         return wrapper
     return _timer
 
@@ -36,7 +37,6 @@ def foo(arg1, delay):
     time.sleep(delay)
     pass
 
-
 @timer(10)
 def boo(arg1, delay):
     time.sleep(delay)
@@ -44,13 +44,15 @@ def boo(arg1, delay):
 
 
 dct = dict()
-for i in range(10):
-    dct[i+1] = foo("Walter", 0.2)
-    assert math.isclose(dct[i+1], 0.2, rel_tol = 0.1) == True
+for i in range(20):
+    foo("Walter", 0.2)
+for i in range(len(dct)):
+    assert math.isclose(dct[i+1], 0.2, rel_tol = 0.1) == True 
 
 print('------------\n')
     
 dct.clear()
 for i in range(30):
-    dct[i+1] = boo("Walter", 0.5)
+    boo("Walter", 0.5)
+for i in range(len(dct)):
     assert math.isclose(dct[i+1], 0.5, rel_tol = 0.06) == True

@@ -1,4 +1,18 @@
 import json
+import string
+
+
+def word_count(st, word):
+    st = st.translate(str.maketrans('', '', string.punctuation))
+    st = st.lower().split(' ')
+    dct = {}
+    dct[word] = 0
+    for el in st:
+        if el in dct:
+            dct[el] += 1
+        else:
+            dct[el] = 1
+    return dct[word]
 
 
 def parse_json(keyword_callback, json_str: str, required_fields=None, keywords=None):
@@ -15,8 +29,9 @@ def parse_json(keyword_callback, json_str: str, required_fields=None, keywords=N
             num_miss_fields += 1
         else:
             for i in range(len(keywords)):
-                if json_doc[field].count(keywords[i]) > 0:
-                    for k in range(json_doc[field].count(keywords[i])):
+                count = word_count(json_doc[field], keywords[i])
+                if count > 0:
+                    for k in range(count):
                         keyword_callback(field, keywords[i], dct)
                 
     if num_miss_fields == len(required_fields):
@@ -43,9 +58,9 @@ parse_json(keyword_callback, json_str, ["ddd", "fff", "key1", "key3", "key"], ["
 assert dct == {'key1 - word2': 1, 'key3 - word2': 1, 'key3 - word4': 1}
 
 dct.clear()
-json_str = '{"key1": "Word1 word2 word3 word2 word4", "key2": "word2 word3", "key3": "word1 word2 word3 word4"}'
+json_str = '{"key1": "Word1 word2, word3 word2 word4less", "key3": "word2 word3 word4!"}'
 parse_json(keyword_callback, json_str, ['ddd', 'fff', 'key1', 'key3'], ["word2", "word4"])
-assert dct == {'key1 - word2': 2, 'key1 - word4': 1, 'key3 - word2': 1, 'key3 - word4': 1}
+assert dct == {'key1 - word2': 2, 'key3 - word2': 1, 'key3 - word4': 1}
 
 dct.clear()
 json_str = '{"key1": "Word1 word2", "key2": "word2 word3"}'
