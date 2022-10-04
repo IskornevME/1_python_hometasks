@@ -5,84 +5,78 @@ class Customlist(list):
     '''
     This is Customlist class inherited from list
     '''
-    def __init__(self, lst):
-        if not isinstance(lst, list):
-            raise TypeError("Аргумент должен иметь тип list")
-        self.lst = lst
+    def __init__(self, iterable):
+        for item in iterable:
+            self.check_number(item) 
+        super().__init__(int(item) for item in iterable)
 
 
-    @classmethod
-    def modify_data(cls, other):
+    def check_number(self, item):
         '''
-        Modify data if we use list
+        Check that our data is numbers
         '''
-        if isinstance(other, Customlist):
-            obj2 = other.lst
-        else:
-            obj2 = other
-        return obj2
-
-
+        if not isinstance(item, (int, float)):
+            raise TypeError("Список должен состоять из чисел")
+            
+            
     @classmethod
     def check_data(cls, other):
         '''
         Check that our data has type list or Customlist
         '''
         if not isinstance(other, (list, Customlist)):
-            raise TypeError("Объект должен иметь тип list или Customlist")
+            raise TypeError("Объект должен иметь тип list или Customlist")  
 
 
     def __add__(self, other):
         self.check_data(other)
-        obj2 = self.modify_data(other)
         res = []
-        diff = len(self.lst) - len(obj2)
-        if diff > 0:
+        diff = len(self) - len(other)
+        if (diff > 0):
             for i in range(diff):
-                obj2.append(0)
+                other.append(0)
         else:
             for i in range(-diff):
-                self.lst.append(0)
+                self.append(0)
 
-        for i, ele in enumerate(self.lst):
-            res.append(ele + obj2[i])
-
-        if diff > 0:
-            del obj2[len(obj2) - diff: len(obj2)]
+        for i, ele in enumerate(self):
+            res.append(ele + other[i])
+            
+        if (diff > 0):
+            del other[len(other) - diff: len(other)]
         elif diff != 0:
-            self.lst = self.lst[0:diff]
-
+            del self[len(self) + diff: len(self)]
+        
         return Customlist(res)
 
 
     def __sub__(self, other):
         self.check_data(other)
-        obj2 = self.modify_data(other)
         res = []
-        diff = len(self.lst) - len(obj2)
-        if diff > 0:
+        diff = len(self) - len(other)
+        if (diff > 0):
             for i in range(diff):
-                obj2.append(0)
+                other.append(0)
         else:
             for i in range(-diff):
-                self.lst.append(0)
-
-        for i, ele in enumerate(self.lst):
-            res.append(ele - obj2[i])
-
-        if diff > 0:
-            del obj2 [len(obj2) - diff: len(obj2)]
+                self.append(0)
+        
+        for i, ele in enumerate(self):
+            res.append(ele - other[i])
+            
+        if (diff > 0):
+            del other [len(other) - diff: len(other)]
         elif diff != 0:
-            self.lst = self.lst[0:diff]
+            del self[len(self) + diff: len(self)]
         return Customlist(res)
-
-
+    
+    
     def neg(self):
         '''
         Change sign of all elements
         '''
-        for i, ele in enumerate(self.lst):
-            self.lst[i] = -ele
+        for i, ele in enumerate(self):
+            self[i] = -ele
         return self
 
 
@@ -91,88 +85,69 @@ class Customlist(list):
 
 
     def __iadd__(self, other):
-        self.check_data(other)
-        obj2 = self.modify_data(other)
-        diff = len(self.lst) - len(obj2)
-        if diff > 0:
+        diff = len(self) - len(other)
+        if (diff > 0):
             for i in range(diff):
-                obj2.append(0)
+                other.append(0)
         else:
             for i in range(-diff):
-                self.lst.append(0)
-        for i, ele in enumerate(obj2):
-            self.lst[i] += ele
-        if diff > 0:
-            del obj2[len(obj2) - diff: len(obj2)]
+                self.append(0)
+        for i, ele in enumerate(other):
+            self[i] += ele
+        if (diff > 0):
+            del other[len(other) - diff: len(other)]
         return self
 
 
     def __isub__(self, other):
         self.check_data(other)
-        obj2 = self.modify_data(other)
-        diff = len(self.lst) - len(obj2)
-        if diff > 0:
+        diff = len(self) - len(other)
+        if (diff > 0):
             for i in range(diff):
-                obj2.append(0)
+                other.append(0)
         else:
             for i in range(-diff):
-                self.lst.append(0)
-        for i, ele in enumerate(obj2):
-            self.lst[i] -= ele
-        if diff > 0:
-            del obj2[len(obj2) - diff: len(obj2)]
+                self.append(0)
+        for i, ele in enumerate(other):
+            self[i] -= ele
+        if (diff > 0):
+            del other[len(other) - diff: len(other)]
         return self
 
 
     def __rsub__(self, other):
         return (self - other).neg()
 
-
-    def customsum(self):
-        '''
-        Return sum of all elements
-        '''
-        res = 0
-        for ele in self.lst:
-            res += ele
-        return res
-
-
+    
     def __eq__(self, other):
         self.check_data(other)
-        obj2 = self.modify_data(other)
-        return self.customsum() == sum(obj2)
-
-
+        return sum(self) == sum(other)
+    
+    
     def __ne__(self, other):
         self.check_data(other)
-        obj2 = self.modify_data(other)
-        return self.customsum() != sum(obj2)
-
-
+        return sum(self) != sum(other)
+    
+    
     def __lt__(self, other):
         self.check_data(other)
-        obj2 = self.modify_data(other)
-        return self.customsum() < sum(obj2)
-
-
+        return sum(self) < sum(other)
+    
+    
     def __gt__(self, other):
         self.check_data(other)
-        obj2 = self.modify_data(other)
-        return self.customsum() > sum(obj2)
+        return sum(self) > sum(other)   
 
-
+    
     def __le__(self, other):
         self.check_data(other)
-        obj2 = self.modify_data(other)
-        return self.customsum() <= sum(obj2)
-
+        return sum(self) <= sum(other)
+    
 
     def __ge__(self, other):
         self.check_data(other)
-        obj2 = self.modify_data(other)
-        return self.customsum() >= sum(obj2)
+        return sum(self) >= sum(other)   
 
 
     def __str__(self):
-        return f"({self.lst}, {self.customsum()})"
+        return f"({super().__str__()}, {sum(self)})"
