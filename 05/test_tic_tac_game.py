@@ -131,7 +131,17 @@ class TestAnswer(unittest.TestCase):
 
 
 class TestNewGame(unittest.TestCase):
-    def test_restart_game(self):
+    @patch('builtins.input', return_value='no')
+    def test_no_restart_game(self, mock_input):
         with patch('sys.stdout', new=StringIO()):
-            self.assertEqual(None, game.restart_game('no'))
-            self.assertRaises(ValueError, game.restart_game, 'ddfdd')
+            self.assertEqual('no', game.restart_game())
+
+    @patch('builtins.input', return_value='yes')
+    def test_yes_restart_game(self, mock_input):
+        with patch('sys.stdout', new=StringIO()):
+            self.assertEqual('yes', game.restart_game())
+
+    @patch('builtins.input', return_value='dsgsd')
+    def test_wrong_restart_game(self, mock_input):
+        with patch('sys.stdout', new=StringIO()):
+            self.assertEqual(False, game.restart_game())

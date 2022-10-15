@@ -115,21 +115,28 @@ class TicTacGame:
                 self.board = list(range(1, 10))
                 break
             player = players[int(not players.index(player))]
+        res = self.restart_game()
+        while not res:
+            res = self.restart_game()
+        if res == 'yes':
+            self.start_game()
+
+    def restart_game(self):
         print("\nDo you want to play one more time?\nEnter 'yes' or 'no'")
         ans = input()
-        self.restart_game(ans)
-
-    def restart_game(self, ans):
-        if ans == 'yes':
-            self.board = list(range(1, 10))
-            print("")
-            self.start_game()
-        elif ans == 'no':
-            self.board = list(range(1, 10))
-            print("Goodbye, see you next time.")
-            return
-        else:
-            raise ValueError("Incorrect input. Acceptable values 'yes', 'no'.")
+        try:
+            if ans == 'yes':
+                self.board = list(range(1, 10))
+                print("")
+                return 'yes'
+            if ans == 'no':
+                self.board = list(range(1, 10))
+                print("Goodbye, see you next time.")
+                return 'no'
+            raise ValueError
+        except ValueError:
+            print("Incorrect input. Acceptable values 'yes', 'no'.")
+            return False
 
     def check_winner(self):
         winner_comb = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
