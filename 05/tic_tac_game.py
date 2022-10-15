@@ -1,4 +1,16 @@
+'''
+This file realizes tic tac game
+'''
+
 import random
+
+
+class RangeValueError(Exception):
+    pass
+
+
+class IntValueError(RangeValueError):
+    pass
 
 
 class TicTacGame:
@@ -14,7 +26,6 @@ class TicTacGame:
         print("Oops, seems like we have a draw! What a tense game!")
         return True
 
-
     def show_board(self):
         print('-------------')
         print("| %s | %s | %s |\n -----------" % (self.board[0], self.board[1], self.board[2]))
@@ -22,37 +33,51 @@ class TicTacGame:
         print("| %s | %s | %s |" % (self.board[6], self.board[7], self.board[8]))
         print('-------------')
 
-
     def update_board(self, number, player):
         self.board[number - 1] = player
 
-
-    def validate_input(self, number):
-        if number not in list('-1123456789') + ['-1']:
-            print("Incorrect input. Please input number from 1 to 9.")
-            return True
+    def validate_input(self):
+        try:
+            number = input()
+            if number == 'exit':
+                return number
+            if not number.isdigit():
+                raise IntValueError
+            if int(number) > 9 or int(number) < 1:
+                raise RangeValueError
+        except IntValueError:
+            print("Please enter positive integer value or 'exit'")
+            print(f"You entered {number}")
+            return False
+        except RangeValueError:
+            print("Incorrect input. Please input integer number from 1 to 9")
+            print(f"You entered {number}")
+            return False
         number = int(number)
         if self.board[number - 1] in ["0", "X"]:
             print("Sorry, this position occupied. Enter another number")
-            return True
-        return False
-
+            return False
+        return number
 
     @staticmethod
-    def validate_answer(ans, players):
+    def validate_answer(players):
+        ans = input()
         tmp = random.randint(0, 1)
-        if ans == "yes":
-            return players[tmp]
-        if ans == players[0]:
-            return '0'
-        if ans == players[1]:
-            return 'X'
-        if ans == '-1':
-            print("Goodbye, see you next time")
-            return ans
-        raise ValueError("Incorrect input. Acceptable values"
-                         "'yes', '0', 'X', '-1'")
-
+        try:
+            if ans == "yes":
+                return players[tmp]
+            if ans == players[0]:
+                return '0'
+            if ans == players[1]:
+                return 'X'
+            if ans == 'exit':
+                print("Goodbye, see you next time")
+                return ans
+            raise ValueError
+        except ValueError:
+            print("Incorrect input.")
+            print("Acceptable values 'yes', '0', 'X', 'exit'. Try again")
+            return False
 
     def print_rules(self):
         print("Hello! This is a TicTac game!\n"
@@ -63,23 +88,22 @@ class TicTacGame:
         self.show_board()
         print("And here is one more thing:\n"
               "If you want random choice of move type 'yes', otherwise type 'X' or '0'.")
-        print("If you want to end the game just type -1.")
-
+        print("If you want to end the game just type 'exit'.")
 
     def start_game(self):
         self.print_rules()
         players = ['0', 'X']
-        ans = input()
-        player = self.validate_answer(ans, players)
-        if player == '-1':
+        player = self.validate_answer(players)
+        while not player:
+            player = self.validate_answer(players)
+        if player == 'exit':
             return
         while True:
             print(f"Player {player} please make your move.")
-            number = input()
-            while self.validate_input(number):
-                number = input()
-            number = int(number)
-            if number == -1:
+            number = self.validate_input()
+            while not number:
+                number = self.validate_input()
+            if number == 'exit':
                 print("Goodbye, see you next time")
                 self.board = list(range(1, 10))
                 return
@@ -95,7 +119,6 @@ class TicTacGame:
         ans = input()
         self.restart_game(ans)
 
-
     def restart_game(self, ans):
         if ans == 'yes':
             self.board = list(range(1, 10))
@@ -107,7 +130,6 @@ class TicTacGame:
             return
         else:
             raise ValueError("Incorrect input. Acceptable values 'yes', 'no'.")
-
 
     def check_winner(self):
         winner_comb = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
