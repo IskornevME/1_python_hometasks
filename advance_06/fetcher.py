@@ -38,14 +38,14 @@ async def fetch_batch_urls(queue, num_workers, res_dict):
             task.cancel()
 
 
-async def main(file_name, num_workers, res_dict, mock_urls=None):
-    if mock_urls:
+async def main(file_name, num_workers, res_dict, mock_artefacts=None):
+    if mock_artefacts:
         urls_queue = asyncio.Queue()
-        for elem in mock_urls:
+        for elem in mock_artefacts:
             await urls_queue.put(elem[0])
 
         with aioresponses() as mocked:
-            for elem in mock_urls:
+            for elem in mock_artefacts:
                 mocked.get(elem[0], status=200, body=elem[1], repeat=True)
 
             t_1 = time.time()
