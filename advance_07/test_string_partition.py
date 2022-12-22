@@ -62,6 +62,13 @@ def test_many_separator():
     assert string.partition(separator) == expected
 
 
+def test_sep_all_string():
+    string = "You a wizard, Harry!"
+    separator = "You a wizard, Harry!"
+    expected = ("", "You a wizard, Harry!", "")
+    assert string.partition(separator) == expected
+
+
 def test_no_args():
     string = "One ring to rule them all"
     with pytest.raises(TypeError) as err:
