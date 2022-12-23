@@ -1,0 +1,13 @@
+2022-12-24 00:00:16 - INFO - funcName: __init__ - filename: logging_lru_cache.py - lineno: 18 - Logging setup completed successfully
+2022-12-24 00:00:16 - INFO - funcName: set_ - filename: logging_lru_cache.py - lineno: 40 - Successfully added new element. Size has increased by one. Now size = 1
+2022-12-24 00:00:16 - INFO - funcName: set_ - filename: logging_lru_cache.py - lineno: 40 - Successfully added new element. Size has increased by one. Now size = 2
+2022-12-24 00:00:16 - ERROR - funcName: get - filename: logging_lru_cache.py - lineno: 24 - ValueError. There is not such key in dict
+Traceback (most recent call last):
+  File "/Users/matthewiskornev/Made/Advanced_Python/hm_01/logging_lru_cache.py", line 22, in get
+    i = self.keys.index(key)
+ValueError: 'k3' is not in deque
+2022-12-24 00:00:16 - INFO - funcName: set_ - filename: logging_lru_cache.py - lineno: 45 - Delete the oldest key and value
+2022-12-24 00:00:16 - INFO - funcName: set_ - filename: logging_lru_cache.py - lineno: 46 - Successfully added new element. Size hasn't change
+2022-12-24 00:00:16 - WARNING - funcName: my_remove - filename: logging_lru_cache.py - lineno: 53 - Key = k3 already exist. Let's rewrite its value.
+2022-12-24 00:00:16 - INFO - funcName: set_ - filename: logging_lru_cache.py - lineno: 40 - Successfully added new element. Size has increased by one. Now size = 2
+2022-12-24 00:00:16 - INFO - funcName: get - filename: logging_lru_cache.py - lineno: 31 - Move element with key = k2 to the top
