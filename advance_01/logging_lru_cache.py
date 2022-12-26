@@ -59,29 +59,29 @@ class LRUCache:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        handler = logging.FileHandler('logging_lru_cache.log', mode="w")
-        formatter = logging.Formatter(
-            "%(asctime)s - %(levelname)s - funcName: %(funcName)s - "
-            "filename: %(filename)s - lineno: %(lineno)d - %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S"
-        )
-    elif len(sys.argv) == 2 and sys.argv[1] == "-s":
-        handler = logging.StreamHandler()
-        formatter = logging.Formatter(
+    logger = logging.getLogger("logging_lru_cache")
+    logger.setLevel(logging.INFO)
+    handler = logging.FileHandler('logging_lru_cache.log', mode="w")
+    formatter = logging.Formatter(
+        "%(asctime)s - %(levelname)s - funcName: %(funcName)s - "
+        "filename: %(filename)s - lineno: %(lineno)d - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S"
+    )
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    if len(sys.argv) == 2 and sys.argv[1] == "-s":
+        handler_stream = logging.StreamHandler()
+        formatter_stream = logging.Formatter(
             "%(asctime)s\t%(levelname)s\t%(name)20s\t%(message)s",
             datefmt="%Y-%m-%d %H:%M:%S"
             )
-    else:
+        handler_stream.setFormatter(formatter_stream)
+        logger.addHandler(handler_stream)
+    elif len(sys.argv) != 1 and (len(sys.argv) != 2 or sys.argv[1] != "-s"):
         print("If you want logging in file don't print"
               " any arguments. If you also want logging to stdout"
               " print '-s'.")
         sys.exit(1)
-
-    logger = logging.getLogger("logging_lru_cache")
-    logger.setLevel(logging.INFO)
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
 
     cache = LRUCache()
     cache.set_('k1', 'val1')
