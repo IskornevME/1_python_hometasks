@@ -110,36 +110,32 @@ def create(n):
     players_[0].position.pos_name += " in team"
     players_slots_[0].position.pos_name += " in team"
     players_weakref_[0].position.pos_name += " in team"
+    del players_weakref_
 
 
 def profile_deco(func):
+    prof = cProfile.Profile()
+    stats = io.StringIO()
     count = 0
-    arr_calls = []
 
-    def wrapper(*args):
-        nonlocal count, arr_calls
+    def wrapper(*args, **kwargs):
+        nonlocal count, stats, prof
         count += 1
-        arr_calls.append(args[0])
         print(f"Число вызовов функции {func.__name__} =", count)
-        prof = cProfile.Profile()
         prof.enable()
 
-        for k in range(count):
-            func(arr_calls[k])
+        res = func(*args, **kwargs)
 
         prof.disable()
-        stream = io.StringIO()
+        return res
+
+    def print_statisctic():
         sortby = 'cumulative'
-        pstat = pstats.Stats(prof, stream=stream).sort_stats(sortby)
-        pstat.print_stats()
+        ps_ = pstats.Stats(prof, stream=stats).sort_stats(sortby)
+        ps_.print_stats()
+        print(stats.getvalue())
 
-        class Stat:  # pylint: disable=too-few-public-methods
-            @staticmethod
-            def print_stat():
-                print(stream.getvalue())
-
-        return Stat
-
+    wrapper.print_stat = print_statisctic
     return wrapper
 
 
@@ -163,15 +159,15 @@ def weakref_class(n):
 
 @profile_deco
 def simple_class_get(n):
-    for i in range(n):
-        ctry_name = players[i].country.country_name
+    for j in range(n):
+        ctry_name = players[j].country.country_name
         ctry_name += " "
 
 
 @profile_deco
 def slots_class_get(n):
-    for i in range(n):
-        ctry_name = players_slots[i].country.country_name
+    for k in range(n):
+        ctry_name = players_slots[k].country.country_name
         ctry_name += " "
 
 
@@ -240,30 +236,36 @@ if __name__ == "__main__":
         players.append(FootballPlayer(countries[i], positions[i], teams[i]))
         players_slots.append(FootballPlayerSlots(countries[i], positions[i], teams[i]))
         players_weakref.append(FootballPlayerWeakref(countries[i], positions[i], teams[i]))
-    simple_class(N).print_stat()
-    slots_class(N).print_stat()
-    weakref_class(N).print_stat()
+    simple_class(N)
+    simple_class.print_stat()
+    slots_class(N)
+    slots_class.print_stat()
+    weakref_class(N)
+    weakref_class.print_stat()
 
-    for _ in range(9):
+    for _ in range(10):
         simple_class_get(N)
-    simple_class_get(N).print_stat()
-    for _ in range(9):
+    simple_class_get.print_stat()
+    for _ in range(10):
         slots_class_get(N)
-    slots_class_get(N).print_stat()
-    for _ in range(9):
+    slots_class_get.print_stat()
+    for _ in range(10):
         weakref_class_get(N)
-    weakref_class_get(N).print_stat()
+    weakref_class_get.print_stat()
 
-    for _ in range(9):
+    for _ in range(10):
         simple_class_change(N)
-    simple_class_change(N).print_stat()
-    for _ in range(9):
+    simple_class_change.print_stat()
+    for _ in range(10):
         slots_class_change(N)
-    slots_class_change(N).print_stat()
-    for _ in range(9):
+    slots_class_change.print_stat()
+    for _ in range(10):
         weakref_class_change(N)
-    weakref_class_change(N).print_stat()
+    weakref_class_change.print_stat()
 
-    simple_class_del(N).print_stat()
-    slots_class_del(N).print_stat()
-    weakref_class_del(N).print_stat()
+    simple_class_del(N)
+    simple_class_del.print_stat()
+    slots_class_del(N)
+    slots_class_del.print_stat()
+    weakref_class_del(N)
+    weakref_class_del.print_stat()
